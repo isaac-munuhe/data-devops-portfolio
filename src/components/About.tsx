@@ -12,14 +12,7 @@ const About = () => {
             Passionate about building robust data infrastructure and automating cloud operations
           </p>
 
-          <div className="grid md:grid-cols-2 gap-12 items-center">
-            <div>
-              <img 
-                src={profileImage} 
-                alt="Wilson W Isaac" 
-                className="rounded-2xl shadow-2xl w-full max-w-md mx-auto border border-border glow-effect"
-              />
-            </div>
+          <div className="max-w-3xl mx-auto">
 
             <div className="space-y-6">
               <div>
