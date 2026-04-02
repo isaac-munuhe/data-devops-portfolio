@@ -1,5 +1,4 @@
 import { Card } from "@/components/ui/card";
-import profileImage from "@/assets/profile.jpg";
 
 const About = () => {
   return (
