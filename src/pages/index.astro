@@ -9,26 +9,37 @@ import Blog from '../components/Blog';
 import Contact from '../components/Contact';
 import '../styles/global.css';
 
+// Fetch the collection
 const allPosts = await getCollection('blog');
 
-// Safely map the ID and strip any file extensions the glob loader might attach
+// Safely map and sort for the production build
 const formattedPosts = allPosts
-  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+  .sort((a, b) => {
+    const dateA = a.data.date instanceof Date ? a.data.date.getTime() : new Date(a.data.date).getTime();
+    const dateB = b.data.date instanceof Date ? b.data.date.getTime() : new Date(b.data.date).getTime();
+    return dateB - dateA;
+  })
   .map(post => {
-    // Failsafe: Grab the id, or fallback to slug, or fallback to a string
-    const rawId = post.id || post.slug || 'fallback-id';
-    const cleanId = rawId.replace(/\.mdx?$/, ''); // Removes .md or .mdx
+    // Standardize the ID for the URL
+    const rawId = post.id || post.slug || 'entry';
+    const cleanId = rawId.replace(/\.mdx?$/, ''); 
     
+    // Ensure we have a valid date string for the React component
+    const displayDate = post.data.date instanceof Date 
+      ? post.data.date.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
+      : new Date(post.data.date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+
     return {
       id: cleanId,
       slug: cleanId,
       url: `/blog/${cleanId}`,
+      articleUrl: `/blog/${cleanId}`, // Failsafe for the Blog component
       title: post.data.title,
       description: post.data.description,
-      date: post.data.date.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }),
+      date: displayDate,
       readTime: post.data.readTime,
       category: post.data.category,
-      tags: post.data.tags
+      tags: post.data.tags || []
     };
   })
   .slice(0, 4);
@@ -66,6 +77,7 @@ const formattedPosts = allPosts
       </div>
 
       <div class="border-t border-[#1e293b]/50 bg-[#0a0f1e]/50">
+        {/* Pass the formatted posts to the React component */}
         <Blog posts={formattedPosts} client:only="react" />
       </div>
 

@@ -1,24 +1,26 @@
 {
   "name": "data-devops-portfolio",
+  "type": "module",
   "version": "0.0.1",
   "scripts": {
     "dev": "astro dev",
+    "start": "astro dev",
     "build": "astro build",
-    "preview": "astro preview"
+    "preview": "astro preview",
+    "astro": "astro"
   },
   "dependencies": {
     "@astrojs/react": "^4.2.0",
-    "@astrojs/vercel": "^8.0.0",
-    "@clerk/astro": "^3.0.11",
-    "@tailwindcss/vite": "^4.0.0",
-    "@vercel/blob": "^0.23.4",
-    "astro": "^5.0.0",
-    "lucide-react": "^1.7.0",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "react-markdown": "^10.1.0"
-  },
-  "devDependencies": {
-    "cross-env": "^10.1.0"
+    "@astrojs/tailwind": "^6.0.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "astro": "^5.4.2",
+    "framer-motion": "^12.4.7",
+    "lucide-react": "^0.475.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "tailwindcss": "^4.0.0",
+    "clsx": "^2.1.1",
+    "tailwind-merge": "^3.0.1"
   }
 }
