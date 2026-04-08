@@ -1,0 +1,78 @@
+---
+import { getCollection } from 'astro:content';
+import Navigation from '../components/Navigation';
+import Hero from '../components/Hero';
+import About from '../components/About';
+import Skills from '../components/Skills';
+import Experience from '../components/Experience';
+import Blog from '../components/Blog';
+import Contact from '../components/Contact';
+import '../styles/global.css';
+
+const allPosts = await getCollection('blog');
+
+// Safely map the ID and strip any file extensions the glob loader might attach
+const formattedPosts = allPosts
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+  .map(post => {
+    // Failsafe: Grab the id, or fallback to slug, or fallback to a string
+    const rawId = post.id || post.slug || 'fallback-id';
+    const cleanId = rawId.replace(/\.mdx?$/, ''); // Removes .md or .mdx
+    
+    return {
+      id: cleanId,
+      slug: cleanId,
+      url: `/blog/${cleanId}`,
+      title: post.data.title,
+      description: post.data.description,
+      date: post.data.date.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }),
+      readTime: post.data.readTime,
+      category: post.data.category,
+      tags: post.data.tags
+    };
+  })
+  .slice(0, 4);
+---
+
+<html lang="en" class="scroll-smooth">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="description" content="Data and DevOps Engineering Portfolio by Wilson W Isaac" />
+    <title>Wilson W Isaac | Data & DevOps</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  </head>
+  <body class="bg-[#060b18] text-[#e8edf5] font-sans antialiased selection:bg-[#2979ff] selection:text-white">
+    
+    <Navigation client:load />
+
+    <main class="min-h-screen">
+      <Hero client:only="react" />
+
+      <div class="border-t border-[#1e293b]/50">
+        <About client:only="react" />
+      </div>
+
+      <div class="border-t border-[#1e293b]/50">
+        <Skills client:only="react" />
+      </div>
+
+      <div class="border-t border-[#1e293b]/50">
+        <Experience client:only="react" />
+      </div>
+
+      <div class="border-t border-[#1e293b]/50 bg-[#0a0f1e]/50">
+        <Blog posts={formattedPosts} client:only="react" />
+      </div>
+
+      <div class="border-t border-[#1e293b]/50">
+        <Contact client:only="react" />
+      </div>
+    </main>
+
+  </body>
+</html>

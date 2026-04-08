@@ -1,0 +1,61 @@
+---
+import { getCollection, render } from 'astro:content';
+import Navigation from '../../components/Navigation';
+import '../../styles/global.css';
+
+// 1. Tell Astro exactly which pages to build based on the markdown files
+export async function getStaticPaths() {
+  const posts = await getCollection('blog');
+  
+  return posts.map(post => {
+    // Failsafe: Grab the ID, remove any folder paths, and strip extensions
+    const rawId = post.id || post.slug || '';
+    const cleanId = rawId.split('/').pop().replace(/\.mdx?$/, '');
+    
+    return {
+      params: { id: cleanId },
+      props: { post },
+    };
+  });
+}
+
+// 2. Grab the specific post data
+const { post } = Astro.props;
+const { Content } = await render(post);
+---
+
+<html lang="en" class="scroll-smooth">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>{post.data.title} | Wilson W Isaac</title>
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  </head>
+  <body class="bg-[#060b18] text-[#e8edf5] font-sans antialiased selection:bg-[#2979ff] selection:text-white">
+    
+    <Navigation client:load />
+
+    <main class="max-w-4xl mx-auto px-6 py-32 min-h-screen">
+      <a href="/#blog" class="text-[#2979ff] hover:text-white text-sm font-mono mb-8 inline-block transition-colors">&larr; Back to System Logs</a>
+      
+      <div class="mb-12 border-b border-[#1e293b]/50 pb-8">
+        <div class="flex gap-4 text-sm font-mono text-[#64748b] mb-4 uppercase">
+          <span>{post.data.category}</span>
+          <span>//</span>
+          <span>{post.data.readTime}</span>
+        </div>
+        <h1 class="text-4xl md:text-5xl font-bold font-rajdhani text-white mb-6 leading-tight">
+          {post.data.title}
+        </h1>
+        <p class="text-xl text-[#94a3b8] font-light">
+          {post.data.description}
+        </p>
+      </div>
+
+      <article class="prose prose-invert prose-blue max-w-none prose-headings:font-rajdhani prose-a:text-[#2979ff] prose-pre:bg-[#0a0f1e] prose-pre:border prose-pre:border-[#1e293b] prose-code:text-[#00e5ff]">
+        <Content />
+      </article>
+    </main>
+
+  </body>
+</html>
